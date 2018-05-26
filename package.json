@@ -1,0 +1,39 @@
+{
+  "name": "upload-csv-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "node_modules/.bin/nodemon -w ./server bin/runServer -e js,json",
+    "build-ui": "node_modules/.bin/parcel build ui/index.html",
+    "start": "npm run build-ui && NODE_ENV=prod node ./bin/runServer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antoniopuero/upload-csv-demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/antoniopuero/upload-csv-demo/issues"
+  },
+  "homepage": "https://github.com/antoniopuero/upload-csv-demo#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "lodash": "^4.17.10",
+    "morgan": "^1.9.0",
+    "nconf": "^0.10.0",
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0"
+  },
+  "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-react": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "nodemon": "^1.17.5",
+    "parcel": "^1.8.1",
+    "parcel-bundler": "^1.8.1",
+    "prettier": "^1.12.1"
+  }
+}
