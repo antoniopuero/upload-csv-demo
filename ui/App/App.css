@@ -1,0 +1,12 @@
+.app-container {
+    position: relative;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 2rem;
+}
+
+.app-container .app-upload-button {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+}

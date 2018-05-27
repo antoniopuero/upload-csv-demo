@@ -20,14 +20,25 @@
   },
   "homepage": "https://github.com/antoniopuero/upload-csv-demo#readme",
   "dependencies": {
+    "@material-ui/core": "^1.0.0",
+    "async": "^2.6.1",
+    "busboy": "^0.2.14",
+    "csv-parser": "^1.12.1",
     "express": "^4.16.3",
     "lodash": "^4.17.10",
     "morgan": "^1.9.0",
     "nconf": "^0.10.0",
     "react": "^16.4.0",
-    "react-dom": "^16.4.0"
+    "react-autosuggest": "^9.3.4",
+    "react-dom": "^16.4.0",
+    "react-dropzone": "^4.2.10",
+    "react-toastify": "^4.0.1",
+    "socket.io": "^2.1.1",
+    "sqlite3": "^4.0.0",
+    "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",

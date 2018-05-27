@@ -1,10 +1,15 @@
 import express from 'express';
+import http from 'http';
 import logger from 'morgan';
 import config from '../config';
 import errorHandler from './middleware/errorHandler';
 import parcelDevServer from './middleware/parcelDevServer';
 import apiRouter from './routes/api';
+import { configureSocket } from './socket/client';
+
 const app = express();
+const server = http.Server(app);
+configureSocket(server);
 
 if (config.get('env') !== 'test') {
   app.use(logger('tiny'));
@@ -26,7 +31,7 @@ app.use((req, res) => {
   res.status(404).send("The page you are looking for wasn't found.");
 });
 
-app.listen(config.get('port'), () => {
+server.listen(config.get('port'), () => {
   console.log(
     `Server is listening on localhost:${config.get('port')} env=${config.get(
       'env'

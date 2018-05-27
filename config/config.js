@@ -1,6 +1,7 @@
 export default {
   defaults: {
-    port: process.env.PORT || 3000
+    port: process.env.PORT || 3000,
+    db: './sqlite.db'
   },
 
   prod: {},
