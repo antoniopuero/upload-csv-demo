@@ -11,11 +11,9 @@ const app = express();
 const server = http.Server(app);
 configureSocket(server);
 
-if (config.get('env') !== 'test') {
-  app.use(logger('tiny'));
-}
+app.use(logger('tiny'));
 
-if (config.get('env') === 'prod') {
+if (config.get('env') !== 'dev') {
   app.use(express.static('./dist'));
 }
 
@@ -23,6 +21,8 @@ app.use('/', apiRouter);
 
 app.use(errorHandler);
 
+// bundler is here because it handles all the requests which
+// didn't match before
 if (config.get('env') === 'dev') {
   app.use(parcelDevServer());
 }

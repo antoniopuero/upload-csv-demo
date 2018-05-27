@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start-dev": "node_modules/.bin/nodemon -w ./server bin/runServer -e js,json",
+    "dev": "node_modules/.bin/nodemon -w ./server bin/runServer -e js,json",
     "build-ui": "node_modules/.bin/parcel build ui/index.html",
-    "start": "npm run build-ui && NODE_ENV=prod node ./bin/runServer"
+    "start": "npm run build-ui && NODE_ENV=prod node ./bin/runServer",
+    "test": "NODE_ENV=test node bin/runTests ./server/__tests__/**/*.js --exit"
   },
   "repository": {
     "type": "git",
@@ -44,9 +45,12 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0",
     "nodemon": "^1.17.5",
     "parcel": "^1.8.1",
     "parcel-bundler": "^1.8.1",
-    "prettier": "^1.12.1"
+    "prettier": "^1.12.1",
+    "supertest": "^3.1.0"
   }
 }

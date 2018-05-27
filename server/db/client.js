@@ -6,6 +6,8 @@ if (config.get('env') === 'dev') {
   sqlite3.verbose();
 }
 const db = new sqlite3.Database(config.get('db'));
+// if there was no database before
+// we need to initiate the table
 initTable();
 
 function promisify(stm, sql) {

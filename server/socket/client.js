@@ -7,17 +7,28 @@ const eventBus = new EventEmitter();
 export function configureSocket(server) {
   const io = socketIO(server);
   io.on('connection', socket => {
-    eventBus.on(uploadEvents.started, progress => {
+    function uploadStarted(progress) {
       socket.emit(uploadEvents.started, { progress });
-    });
-    eventBus.on(uploadEvents.progress, progress => {
+    }
+    function uploadProgress(progress) {
       socket.emit(uploadEvents.progress, { progress });
-    });
-    eventBus.on(uploadEvents.finished, progress => {
+    }
+    function uploadFinished(progress) {
       socket.emit(uploadEvents.finished, { progress, finished: true });
-    });
-    eventBus.on(uploadEvents.failed, () => {
+    }
+    function uploadFailed() {
       socket.emit(uploadEvents.failed, { error: 'Upload failed' });
+    }
+    eventBus.on(uploadEvents.started, uploadStarted);
+    eventBus.on(uploadEvents.progress, uploadProgress);
+    eventBus.on(uploadEvents.finished, uploadFinished);
+    eventBus.on(uploadEvents.failed, uploadFailed);
+
+    socket.on('disconnect', () => {
+      eventBus.off(uploadEvents.started, uploadStarted);
+      eventBus.off(uploadEvents.progress, uploadProgress);
+      eventBus.off(uploadEvents.finished, uploadFinished);
+      eventBus.off(uploadEvents.failed, uploadFailed);
     });
   });
 }

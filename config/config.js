@@ -9,5 +9,8 @@ export default {
   dev: {
     port: 3001
   },
-  test: {}
+  test: {
+    port: 3002,
+    db: './sqlite.db.test'
+  }
 };
