@@ -4,14 +4,14 @@
 }
 .react-autosuggest__container {
     position: relative;
-    width: 280px;
+    width: 300px;
     margin-right: 2rem;
 }
 
 .react-autosuggest__suggestions-container--open {
     position: absolute;
     z-index: 1;
-    max-height: 200px;
+    max-height: 300px;
     overflow: auto;
     left: 0;
     right: 0;

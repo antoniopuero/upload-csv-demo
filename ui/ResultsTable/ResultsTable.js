@@ -1,109 +1,76 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import TablePagination from '@material-ui/core/TablePagination';
+import { toast } from 'react-toastify';
+import isEmpty from 'lodash/isEmpty';
 import AutoSuggest from './AutoSuggest';
-
-const data = [
-  { id: 1, name: 'name', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 2, name: 'name1', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 3, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 4, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 5, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 6, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 7, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 8, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 10, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 11, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 12, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 13, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 14, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 15, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 16, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 17, name: 'name2', age: 20, address: 'dfafadf', team: 'teamA' },
-  { id: 9, name: 'name3', age: 20, address: 'dfafadf', team: 'teamA' }
-];
+import { getData } from '../actions/apiActions';
 
 class ResultTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      page: 0,
-      rowsPerPage: 10
+      selected: {}
     };
   }
-  handleChangePage(page) {
-    this.setState({ page });
+
+  getData(query, limit) {
+    return getData(query, limit).then(data => {
+      if (data.error) {
+        toast.error(data.error);
+        return [];
+      }
+      return data;
+    });
   }
 
-  handleChangeRowsPerPage(rowsPerPage) {
-    this.setState({ rowsPerPage });
+  showSelected(selected) {
+    this.setState({
+      selected: selected
+    });
   }
+
   render() {
-    const { page, rowsPerPage } = this.state;
+    const { selected } = this.state;
     return (
       <Paper>
         <AutoSuggest
           id="searchField"
           labelKey="name"
-          getSuggestions={() => Promise.resolve(data)}
-          onSuggestionSelected={suggestion => console.log(suggestion)}
+          getSuggestions={query => this.getData(query)}
+          onSuggestionSelected={suggestion => this.showSelected(suggestion)}
         />
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell numeric>Id</TableCell>
-              <TableCell>Name</TableCell>
-              <TableCell numeric>Age</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Team</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map(dataPoint => {
-                return (
-                  <TableRow key={dataPoint.id}>
-                    <TableCell component="th" scope="row" numeric>
-                      {dataPoint.id}
-                    </TableCell>
-                    <TableCell>{dataPoint.name}</TableCell>
-                    <TableCell numeric>{dataPoint.age}</TableCell>
-                    <TableCell>{dataPoint.address}</TableCell>
-                    <TableCell>{dataPoint.team}</TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
-        <TablePagination
-          component="div"
-          count={data.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          backIconButtonProps={{
-            'aria-label': 'Previous Page'
-          }}
-          nextIconButtonProps={{
-            'aria-label': 'Next Page'
-          }}
-          onChangePage={(event, pageNumber) =>
-            this.handleChangePage(pageNumber)
-          }
-          onChangeRowsPerPage={event =>
-            this.handleChangeRowsPerPage(event.target.value)
-          }
-        />
+        {isEmpty(selected) ? null : (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell numeric>Id</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell numeric>Age</TableCell>
+                <TableCell>Address</TableCell>
+                <TableCell>Team</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow key={selected.id}>
+                <TableCell component="th" scope="row" numeric>
+                  {selected.id}
+                </TableCell>
+                <TableCell>{selected.name}</TableCell>
+                <TableCell numeric>{selected.age}</TableCell>
+                <TableCell>{selected.address}</TableCell>
+                <TableCell>{selected.team}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        )}
       </Paper>
     );
   }
 }
 
-ResultTable.propTypes = {};
 export default ResultTable;

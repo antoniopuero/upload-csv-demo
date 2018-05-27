@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Autosuggest from 'react-autosuggest';
+import parse from 'autosuggest-highlight/parse';
 import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
 import MenuItem from '@material-ui/core/MenuItem';
 import findIndex from 'lodash/findIndex';
+import debounce from 'lodash/debounce';
 import './AutoSuggest.css';
+
+function customMatch(text, query) {
+  const results = [];
+  const trimmedQuery = query.trim().toLowerCase();
+  const textLower = text.toLowerCase();
+  const queryLength = trimmedQuery.length;
+  let indexOf = textLower.indexOf(trimmedQuery);
+  while (indexOf > -1) {
+    results.push([indexOf, indexOf + queryLength]);
+    indexOf = textLower.indexOf(query, indexOf + queryLength);
+  }
+  return results;
+}
 
 function renderInput(inputProps) {
   const { ref, ...other } = inputProps;
@@ -21,10 +36,22 @@ function renderInput(inputProps) {
   );
 }
 
-function renderSuggestion(suggestion, index, { isHighlighted }) {
+function renderSuggestion(suggestion, index, { query, isHighlighted }) {
+  const matches = customMatch(suggestion, query);
+  const parts = parse(suggestion, matches);
   return (
-    <MenuItem selected={isHighlighted} component="div" id={`result-${index}`}>
-      <div>{suggestion}</div>
+    <MenuItem selected={isHighlighted} component="div">
+      <div id={`result-${index}`}>
+        {parts.map((part, index) => {
+          return part.highlight ? (
+            <strong key={String(index)} style={{ fontWeight: 800 }}>
+              {part.text}
+            </strong>
+          ) : (
+            <span key={String(index)}>{part.text}</span>
+          );
+        })}
+      </div>
     </MenuItem>
   );
 }
@@ -46,6 +73,10 @@ class AutoSuggest extends Component {
       value: '',
       suggestions: []
     };
+    this.handleSuggestionsFetchDebounce = debounce(
+      ({ value }) => this.handleSuggestionsFetchRequested(value),
+      200
+    );
   }
 
   getSuggestionValue(suggestion) {
@@ -56,7 +87,7 @@ class AutoSuggest extends Component {
     return findIndex(this.state.suggestions, suggestion);
   }
 
-  handleSuggestionsFetchRequested({ value }) {
+  handleSuggestionsFetchRequested(value) {
     this.props.getSuggestions(value).then(suggestions => {
       this.setState({
         suggestions
@@ -96,7 +127,7 @@ class AutoSuggest extends Component {
           getSuggestionValue={suggestion => this.getSuggestionValue(suggestion)}
           suggestions={this.state.suggestions}
           onSuggestionsFetchRequested={e =>
-            this.handleSuggestionsFetchRequested(e)
+            this.handleSuggestionsFetchDebounce(e)
           }
           onSuggestionsClearRequested={e =>
             this.handleSuggestionsClearRequested(e)

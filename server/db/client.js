@@ -54,7 +54,7 @@ export function finalizeStatement(stm) {
   return stm.finalize();
 }
 
-export function searchValuesByName(name, limit = 20, offset = 0) {
+export function searchValuesByName(name = '', limit = 20, offset = 0) {
   return new Promise((resolve, reject) => {
     db.all(
       `SELECT * FROM people WHERE name LIKE '%${name}%' LIMIT ${limit} OFFSET ${offset}`,

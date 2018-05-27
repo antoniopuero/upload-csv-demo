@@ -15,8 +15,9 @@ import {
   finalizeStatement,
   searchValuesByName
 } from '../db/client';
+import socketEventBus from '../socket/client';
 import { BadRequest } from '../utils/errors';
-import { headers } from '../utils/constants';
+import { headers, uploadEvents } from '../../config/constants';
 
 const api = Router();
 
@@ -45,23 +46,37 @@ function uploadFile(req, res, next) {
   req.pipe(busboy);
 }
 
+function isMimeTypeSupported(mimeType) {
+  return ['text/csv', 'application/vnd.ms-excel', 'application/csv'].includes(
+    mimeType
+  );
+}
+
 function importFile(fileStream) {
-  const progress = { sent: 0, processed: 0, finished: false };
+  const progress = { sent: 0, processed: 0, allSent: false };
+  socketEventBus.emit(uploadEvents.started, progress);
+
   const stm = insertStatement();
   const callsQueue = queue((action, done) => {
     action().then(
       () => {
         progress.processed += 1;
+        // emit progress only each 500 calls
+        if (progress.processed % 500 === 0) {
+          socketEventBus.emit(uploadEvents.progress, progress);
+        }
         done();
       },
       err => {
         console.error('Error in console queue: ', err);
+        socketEventBus.emit(uploadEvents.failed, progress);
         done();
       }
     );
   });
 
   callsQueue.drain = () => {
+    socketEventBus.emit(uploadEvents.finished, progress);
     finalizeStatement(stm);
   };
 
@@ -79,14 +94,8 @@ function importFile(fileStream) {
       callsQueue.push(() => insertValues(stm, Object.values(row)));
     })
     .on('end', () => {
-      progress.finished = true;
+      progress.allSent = true;
     });
-}
-
-function isMimeTypeSupported(mimeType) {
-  return ['text/csv', 'application/vnd.ms-excel', 'application/csv'].includes(
-    mimeType
-  );
 }
 
 function checkOptionalParam(field, value, type) {
@@ -100,7 +109,7 @@ function checkOptionalParam(field, value, type) {
 }
 
 function checkSearchParams(req, res, next) {
-  const { query = '', limit, offset } = this.req.body;
+  const { query, limit, offset } = req.body;
   let errors = [];
   errors.push(checkOptionalParam('query', query, 'string'));
   errors.push(checkOptionalParam('limit', limit, 'integer'));
@@ -109,11 +118,14 @@ function checkSearchParams(req, res, next) {
   if (!isEmpty(compact(errors))) {
     return next(new BadRequest('', errors));
   }
+  return next();
 }
 
 function searchPeople(req, res, next) {
-  searchValuesByName(req.body.search, req.body.limit).then(
-    results => res.json(results),
+  const { query, limit, offset } = req.body;
+  console.log(query);
+  searchValuesByName(query, limit, offset).then(
+    results => res.json({ results }),
     err => next(err)
   );
 }
