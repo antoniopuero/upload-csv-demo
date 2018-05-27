@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import Card from '@material-ui/core/Card';
+import CardHeader from '@material-ui/core/CardHeader';
+import CardContent from '@material-ui/core/CardContent';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
 import { toast } from 'react-toastify';
 import isEmpty from 'lodash/isEmpty';
 import AutoSuggest from './AutoSuggest';
@@ -36,6 +36,15 @@ class ResultTable extends Component {
 
   render() {
     const { selected } = this.state;
+    const isSelected = !isEmpty(selected);
+    let initials;
+    if (isSelected) {
+      initials = selected.name
+        .split(/\s/)
+        .map(word => word[0])
+        .join('')
+        .toUpperCase();
+    }
     return (
       <Paper>
         <AutoSuggest
@@ -44,30 +53,28 @@ class ResultTable extends Component {
           getSuggestions={query => this.getData(query)}
           onSuggestionSelected={suggestion => this.showSelected(suggestion)}
         />
-        {isEmpty(selected) ? null : (
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell numeric>Id</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell numeric>Age</TableCell>
-                <TableCell>Address</TableCell>
-                <TableCell>Team</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow key={selected.id}>
-                <TableCell component="th" scope="row" numeric>
-                  {selected.id}
-                </TableCell>
-                <TableCell>{selected.name}</TableCell>
-                <TableCell numeric>{selected.age}</TableCell>
-                <TableCell>{selected.address}</TableCell>
-                <TableCell>{selected.team}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        )}
+        {isSelected ? (
+          <Card>
+            <CardHeader
+              avatar={<Avatar aria-label="initials">{initials}</Avatar>}
+              title={selected.name}
+            />
+            <CardContent>
+              <Typography>
+                <b>ID:</b> {selected.id}
+              </Typography>
+              <Typography>
+                <b>Age:</b> {selected.age}
+              </Typography>
+              <Typography>
+                <b>Address:</b> {selected.address}
+              </Typography>
+              <Typography>
+                <b>Team:</b> {selected.team}
+              </Typography>
+            </CardContent>
+          </Card>
+        ) : null}
       </Paper>
     );
   }

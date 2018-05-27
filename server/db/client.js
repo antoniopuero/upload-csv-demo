@@ -1,7 +1,6 @@
 import sqlite3 from 'sqlite3';
-import config from '../../config';
-import map from 'lodash/map';
 import sqlString from 'sqlstring';
+import config from '../../config';
 
 if (config.get('env') === 'dev') {
   sqlite3.verbose();
@@ -49,7 +48,7 @@ export function insertStatement() {
 }
 
 export function insertValues(stm, values) {
-  return promisify(stm, map(values, value => sqlString.escape(value)));
+  return promisify(stm, values);
 }
 
 export function finalizeStatement(stm) {
@@ -57,10 +56,10 @@ export function finalizeStatement(stm) {
 }
 
 export function searchValuesByName(query = '', limit = 20, offset = 0) {
-  const escapedQuery = sqlString.escape(query);
+  const escapedQuery = sqlString.escape(`%${query}%`);
   return new Promise((resolve, reject) => {
     db.all(
-      `SELECT * FROM people WHERE name LIKE '%${escapedQuery}%' LIMIT ${limit} OFFSET ${offset}`,
+      `SELECT * FROM people WHERE name LIKE ${escapedQuery} LIMIT ${limit} OFFSET ${offset}`,
       (err, result) => {
         if (err) {
           return reject(err);

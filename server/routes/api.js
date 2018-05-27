@@ -123,7 +123,6 @@ function checkSearchParams(req, res, next) {
 
 function searchPeople(req, res, next) {
   const { query, limit, offset } = req.body;
-  console.log(query);
   searchValuesByName(query, limit, offset).then(
     results => res.json({ results }),
     err => next(err)

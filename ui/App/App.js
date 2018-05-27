@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ResultsTable from '../ResultsTable/ResultsTable';
+import SearchWidget from '../SearchWidget/SearchWidget';
 import UploadWidget from '../UploadWidget/UploadWidget';
 import { importFile } from '../actions/apiActions';
 import '../actions/socketActions';
@@ -30,7 +30,7 @@ export default class App extends Component {
           pauseOnHover
         />
         <UploadWidget onSubmit={file => this.onFileSubmit(file)} />
-        <ResultsTable />
+        <SearchWidget />
       </div>
     );
   }

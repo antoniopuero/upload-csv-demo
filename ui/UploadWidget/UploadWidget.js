@@ -53,7 +53,7 @@ class UploadWidget extends Component {
       calculatedProgress = Math.floor(100 * progress.processed / progress.sent);
     } else {
       // fake progress until we know the row count from the file
-      calculatedProgress = this.state.progress + 1;
+      calculatedProgress = this.state.progress + 0.1;
     }
     this.setState({
       progress: calculatedProgress
@@ -87,7 +87,7 @@ class UploadWidget extends Component {
         {this.state.uploading ? (
           <div className="upload-progress">
             <Typography variant="title" className="upload-title">
-              Uploading
+              Uploading...
             </Typography>
             <LinearProgress variant="determinate" value={this.state.progress} />
           </div>
@@ -106,7 +106,7 @@ class UploadWidget extends Component {
               </Typography>
             ) : (
               <Typography variant="title" className="upload-title">
-                Drug your csv file here or click in the area
+                Drop your csv file here or click in the area
               </Typography>
             )}
             <Button
