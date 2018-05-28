@@ -19,16 +19,16 @@ export function configureSocket(server) {
     function uploadFailed() {
       socket.emit(uploadEvents.failed, { error: 'Upload failed' });
     }
-    eventBus.on(uploadEvents.started, uploadStarted);
-    eventBus.on(uploadEvents.progress, uploadProgress);
-    eventBus.on(uploadEvents.finished, uploadFinished);
-    eventBus.on(uploadEvents.failed, uploadFailed);
+    eventBus.addListener(uploadEvents.started, uploadStarted);
+    eventBus.addListener(uploadEvents.progress, uploadProgress);
+    eventBus.addListener(uploadEvents.finished, uploadFinished);
+    eventBus.addListener(uploadEvents.failed, uploadFailed);
 
     socket.on('disconnect', () => {
-      eventBus.off(uploadEvents.started, uploadStarted);
-      eventBus.off(uploadEvents.progress, uploadProgress);
-      eventBus.off(uploadEvents.finished, uploadFinished);
-      eventBus.off(uploadEvents.failed, uploadFailed);
+      eventBus.removeListener(uploadEvents.started, uploadStarted);
+      eventBus.removeListener(uploadEvents.progress, uploadProgress);
+      eventBus.removeListener(uploadEvents.finished, uploadFinished);
+      eventBus.removeListener(uploadEvents.failed, uploadFailed);
     });
   });
 }
