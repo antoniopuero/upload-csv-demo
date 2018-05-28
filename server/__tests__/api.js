@@ -6,7 +6,7 @@ import app from '../index';
 import { searchValuesByName } from '../db/client';
 import { uploadEvents } from '../../config/constants';
 
-const socketURL = `http://0.0.0.0:${config.get('port')}`;
+const socketURL = `http://0.0.0.0:${config.port}`;
 
 // not arrow function to preserve context for this.timeout
 describe('API', function() {

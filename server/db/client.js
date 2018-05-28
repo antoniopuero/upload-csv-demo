@@ -2,10 +2,10 @@ import sqlite3 from 'sqlite3';
 import sqlString from 'sqlstring';
 import config from '../../config';
 
-if (config.get('env') === 'dev') {
+if (config.env === 'dev') {
   sqlite3.verbose();
 }
-const db = new sqlite3.Database(config.get('db'));
+const db = new sqlite3.Database(config.db);
 // if there was no database before
 // we need to initiate the table
 initTable();

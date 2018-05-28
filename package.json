@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "nodemon -w ./server bin/runServer -e js,json",
     "build-ui": "parcel build ui/index.html",
-    "start": "npm run build-ui && NODE_ENV=prod node ./bin/runServer",
-    "test": "NODE_ENV=test node bin/runTests ./server/__tests__/**/*.js --exit"
+    "start": "npm run build-ui && cross-env NODE_ENV=prod node ./bin/runServer",
+    "test": "cross-env NODE_ENV=test node bin/runTests ./server/__tests__/**/*.js --exit"
   },
   "repository": {
     "type": "git",
@@ -46,6 +46,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
     "chai": "^4.1.2",
+    "cross-env": "^5.1.6",
     "mocha": "^5.2.0",
     "nodemon": "^1.17.5",
     "parcel": "^1.8.1",

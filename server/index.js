@@ -13,7 +13,7 @@ configureSocket(server);
 
 app.use(logger('tiny'));
 
-if (config.get('env') !== 'dev') {
+if (config.env !== 'dev') {
   app.use(express.static('./dist'));
 }
 
@@ -23,7 +23,7 @@ app.use(errorHandler);
 
 // bundler is here because it handles all the requests which
 // didn't match before
-if (config.get('env') === 'dev') {
+if (config.env === 'dev') {
   app.use(parcelDevServer());
 }
 
@@ -31,11 +31,9 @@ app.use((req, res) => {
   res.status(404).send("The page you are looking for wasn't found.");
 });
 
-server.listen(config.get('port'), () => {
+server.listen(config.port, () => {
   console.log(
-    `Server is listening on localhost:${config.get('port')} env=${config.get(
-      'env'
-    )}`
+    `Server is listening on localhost:${config.port} env=${config.env}`
   );
 });
 

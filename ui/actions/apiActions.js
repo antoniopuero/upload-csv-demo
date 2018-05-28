@@ -3,7 +3,11 @@ import map from 'lodash/map';
 
 function mapErrors(errors) {
   return {
-    error: map(errors, error => `${error.field}: ${error.message}`).join('; ')
+    error: map(
+      errors,
+      error =>
+        error.field ? `${error.field}: ${error.message}` : error.message
+    ).join('; ')
   };
 }
 

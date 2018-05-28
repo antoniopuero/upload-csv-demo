@@ -96,7 +96,6 @@ class UploadWidget extends Component {
             onDrop={file => this.onDrop(file)}
             multiple={false}
             inputProps={{ id: 'uploadField' }}
-            accept="text/csv"
             className="upload-dropzone"
             activeClassName="upload-dropzone--active"
           >

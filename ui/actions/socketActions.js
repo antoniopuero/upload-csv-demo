@@ -1,7 +1,8 @@
 import io from 'socket.io-client';
 import { uploadEvents } from '../../config/constants';
+import config from '../../config';
 
-const socket = io();
+const socket = io(`http://0.0.0.0:${config.port}`);
 
 export function subscribeToUploadStart(cb) {
   socket.on(uploadEvents.started, cb);
