@@ -9,7 +9,7 @@ let { defaults } = config;
 let current = config[env];
 
 if (!current) {
-  throw new Error(`Can"t find config for NODE_ENV=${env}`);
+  throw new Error(`Can't find config for NODE_ENV=${env}`);
 }
 
 let result = _.merge({ env }, defaults, current);
